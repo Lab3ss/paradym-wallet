@@ -8,7 +8,7 @@ import {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
-import { useMedia } from 'tamagui'
+import { useMedia, useTheme } from 'tamagui'
 import { AnimatedStack, Stack, XStack, YStack } from '../base'
 import { HeroIcons, IconContainer } from '../content'
 
@@ -32,15 +32,20 @@ export function ProgressHeader({
 }: ProgressHeaderProps) {
   const isError = color === 'danger'
   const media = useMedia()
+  const theme = useTheme()
+  const primaryColor = theme['primary-500'].val as string
+  const dangerColor = theme['danger-500'].val as string
 
   const colorValue = useSharedValue(color === 'primary' ? 0 : 1)
   const animatedStyle = useAnimatedStyle(() => {
-    const backgroundColor = interpolateColor(colorValue.value, [0, 1], ['#5A33F6', '#DC3130'])
+    const backgroundColor = interpolateColor(colorValue.value, [0, 1], [primaryColor, dangerColor])
     return { backgroundColor: backgroundColor }
   })
 
   useEffect(() => {
-    colorValue.value = withTiming(color === 'primary' ? 0 : 1, { duration: 1000 })
+    colorValue.value = withTiming(color === 'primary' ? 0 : 1, {
+      duration: 1000,
+    })
   }, [color])
 
   return (
